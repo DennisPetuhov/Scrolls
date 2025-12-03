@@ -52,7 +52,6 @@ fun CatFormScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Static form section
         Text(
             text = "Cat Form",
             style = MaterialTheme.typography.headlineMedium
@@ -82,7 +81,6 @@ fun CatFormScreen(
             Text("Load Cats")
         }
 
-        // Dynamic content section - LazyColumn for loaded images
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
@@ -140,13 +138,18 @@ fun CatImageItem(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
+            val aspectRatio = if (catImage.height > 0) {
+                catImage.width.toFloat() / catImage.height.toFloat()
+            } else {
+                1f
+            }
             AsyncImage(
                 model = catImage.url,
                 contentDescription = stringResource(R.string.cat_image, catImage.id),
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(
-                        ratio = catImage.width.toFloat() / catImage.height.toFloat(),
+                        ratio = aspectRatio,
                         matchHeightConstraintsFirst = false
                     ),
                 contentScale = ContentScale.Crop

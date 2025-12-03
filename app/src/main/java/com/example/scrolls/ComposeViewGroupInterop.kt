@@ -35,6 +35,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import com.example.scrolls.R
 import com.example.scrolls.ui.theme.ScrollsTheme
 
 //https://medium.com/androiddevelopers/understanding-nested-scrolling-in-jetpack-compose-eb57c1ea0af0
@@ -152,7 +154,7 @@ class ViewGroupNestedScrollConnection(
         if (activeScrollAxis == 0) {
             return Velocity.Zero
         }
-        
+
         val hasConsumedVelocity = consumed.x != 0f || consumed.y != 0f
         ViewCompat.dispatchNestedFling(
             view,
@@ -160,22 +162,28 @@ class ViewGroupNestedScrollConnection(
             available.y,
             hasConsumedVelocity
         )
-        
-        ViewCompat.stopNestedScroll(view, activeScrollAxis)
+
+        ViewCompat.stopNestedScroll(view, ViewCompat.TYPE_TOUCH)
         activeScrollAxis = 0
-        totalConsumedY = 0 // Reset tracking
-        
+        totalConsumedY = 0
+
         return Velocity.Zero
     }
+
 }
 
 @Composable
 fun ComposeInViewGroupExample(
     modifier: Modifier = Modifier,
-    items: List<String> = sampleScrollItems,
+    items: List<String>? = null,
     rowState: LazyListState = rememberLazyListState(),
     columnState: LazyListState = rememberLazyListState()
 ) {
+    val defaultItems = remember {
+        stringArrayResource(R.array.sample_scroll_items).toList()
+    }
+    val finalItems: List<String> = items ?: defaultItems
+    
     val view = LocalView.current
     
     val composeView = remember(view) {
@@ -246,7 +254,7 @@ fun ComposeInViewGroupExample(
                 contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
                 items(
-                    items = items,
+                    items = finalItems,
                     key = { it }
                 ) { item ->
                     ScrollItemCard(item = item)
@@ -312,24 +320,6 @@ private fun ScrollItemCard(
         }
     }
 }
-
-val sampleScrollItems = listOf(
-    "Item 1",
-    "Item 2",
-    "Item 3",
-    "Item 4",
-    "Item 5",
-    "Item 6",
-    "Item 7",
-    "Item 8",
-    "Item 9",
-    "Item 10",
-    "Item 11",
-    "Item 12",
-    "Item 13",
-    "Item 14",
-    "Item 15"
-)
 
 @Preview(showBackground = true)
 @Composable
