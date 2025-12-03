@@ -1,4 +1,4 @@
-package com.example.scrolls.ui
+package com.example.scrolls
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.scrolls.R
 import com.example.scrolls.data.CatImage
 import com.example.scrolls.repository.CatRepository
 
